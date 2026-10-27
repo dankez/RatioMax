@@ -8,6 +8,7 @@ import com.torrent.ratiobooster.engine.TorrentEngineManager
 import com.torrent.ratiobooster.network.AndroidNetworkConstraintChecker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.net.HttpURLConnection
 import java.net.URL
 
 class RatioBoosterWorker(
@@ -27,9 +28,16 @@ class RatioBoosterWorker(
 
         try {
             val url = URL(feedUrl)
-            val connection = url.openConnection()
+            val connection = url.openConnection() as HttpURLConnection
             connection.connectTimeout = 10000
             connection.readTimeout = 10000
+            connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64)")
+
+            val cookie = preferences.cookieHeader
+            if (cookie.isNotEmpty()) {
+                connection.setRequestProperty("Cookie", cookie)
+            }
+
             connection.inputStream.use { inputStream ->
                 engineManager.syncFromRssInputStream(inputStream)
             }

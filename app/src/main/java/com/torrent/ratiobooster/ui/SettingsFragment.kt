@@ -30,6 +30,8 @@ class SettingsFragment : Fragment() {
 
         binding.etStorageLimit.setText(prefs.storageLimitGb.toString())
         binding.etRssFeed.setText(prefs.rssFeedUrl)
+        binding.etTrackerUid.setText(prefs.trackerUid)
+        binding.etTrackerPass.setText(prefs.trackerPass)
         binding.switchWifiOnly.isChecked = prefs.wifiOnly
         binding.switchAutoPrune.isChecked = prefs.autoPruneEnabled
 
@@ -39,6 +41,8 @@ class SettingsFragment : Fragment() {
 
             prefs.storageLimitGb = limitGb
             prefs.rssFeedUrl = binding.etRssFeed.text.toString().trim()
+            prefs.trackerUid = binding.etTrackerUid.text.toString().trim()
+            prefs.trackerPass = binding.etTrackerPass.text.toString().trim()
             prefs.wifiOnly = binding.switchWifiOnly.isChecked
             prefs.autoPruneEnabled = binding.switchAutoPrune.isChecked
 

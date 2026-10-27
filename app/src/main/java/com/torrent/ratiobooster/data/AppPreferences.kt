@@ -19,8 +19,25 @@ class AppPreferences(context: Context) {
         set(value) { prefs.edit().putBoolean("wifi_only", value).apply() }
 
     var rssFeedUrl: String
-        get() = prefs.getString("rss_feed_url", "") ?: ""
+        get() = prefs.getString("rss_feed_url", "https://sktorrent.eu/torrent/rss.php") ?: "https://sktorrent.eu/torrent/rss.php"
         set(value) { prefs.edit().putString("rss_feed_url", value).apply() }
+
+    var trackerUid: String
+        get() = prefs.getString("tracker_uid", "") ?: ""
+        set(value) { prefs.edit().putString("tracker_uid", value).apply() }
+
+    var trackerPass: String
+        get() = prefs.getString("tracker_pass", "") ?: ""
+        set(value) { prefs.edit().putString("tracker_pass", value).apply() }
+
+    val cookieHeader: String
+        get() {
+            val uid = trackerUid.trim()
+            val pass = trackerPass.trim()
+            return if (uid.isNotEmpty() && pass.isNotEmpty()) {
+                "uid=$uid; pass=$pass"
+            } else ""
+        }
 
     var autoPruneEnabled: Boolean
         get() = prefs.getBoolean("auto_prune_enabled", true)

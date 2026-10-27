@@ -77,7 +77,7 @@ class CoreLogicTest {
                     <title>Test Tracker</title>
                     <item>
                         <title>Popular Show S01E01 [S: 20, L: 500]</title>
-                        <link>https://tracker.org/download/1.torrent</link>
+                        <link>https://sktorrent.eu/torrent/details.php?id=79f8d65677b3e96a56b9b7a633411f5fda3d6219</link>
                         <size>1073741824</size>
                         <seeders>20</seeders>
                         <leechers>500</leechers>
@@ -93,11 +93,19 @@ class CoreLogicTest {
         assertEquals(1, items.size)
         val item = items.first()
         assertEquals("Popular Show S01E01 [S: 20, L: 500]", item.title)
-        assertEquals("https://tracker.org/download/1.torrent", item.downloadUrl)
+        assertEquals("https://sktorrent.eu/torrent/download.php?id=79f8d65677b3e96a56b9b7a633411f5fda3d6219", item.downloadUrl)
         assertEquals(1073741824L, item.sizeBytes)
         assertEquals(20, item.seeders)
         assertEquals(500, item.leechers)
         assertEquals(TorrentState.QUEUED, item.state)
+    }
+
+    @Test
+    fun testRssFeedParser_transformSkTorrentUrl() {
+        val parser = RssFeedParser()
+        val detailsUrl = "https://sktorrent.eu/torrent/details.php?id=79f8d65677b3e96a56b9b7a633411f5fda3d6219"
+        val downloadUrl = parser.transformToDownloadUrl(detailsUrl)
+        assertEquals("https://sktorrent.eu/torrent/download.php?id=79f8d65677b3e96a56b9b7a633411f5fda3d6219", downloadUrl)
     }
 
     @Test

@@ -28,11 +28,11 @@ class RssFeedParser {
 
                 val title = element.getElementsByTagName("title").item(0)?.textContent
 
-                var link: String? = null
+                var rawLink: String? = null
                 val linkNodes = element.getElementsByTagName("link")
                 if (linkNodes.length > 0) {
                     val linkEl = linkNodes.item(0) as org.w3c.dom.Element
-                    link = linkEl.getAttribute("href").ifBlank { linkEl.textContent }
+                    rawLink = linkEl.getAttribute("href").ifBlank { linkEl.textContent }
                 }
 
                 var enclosureUrl: String? = null
@@ -52,7 +52,8 @@ class RssFeedParser {
                 val parsedLeechers = leechersStr?.toIntOrNull() ?: 0
                 val parsedSize = sizeBytes ?: sizeStr?.toLongOrNull() ?: (1024L * 1024L * 500L)
 
-                val downloadUrl = enclosureUrl ?: link
+                val targetUrl = enclosureUrl ?: rawLink
+                val downloadUrl = transformToDownloadUrl(targetUrl)
 
                 if (!title.isNullOrBlank() && !downloadUrl.isNullOrBlank()) {
                     val extractedSeeders = parseNumberPattern(title, listOf("seeders", "seeds", "s:")) ?: parsedSeeders
@@ -75,6 +76,15 @@ class RssFeedParser {
         }
 
         return torrents
+    }
+
+    fun transformToDownloadUrl(url: String?): String? {
+        if (url == null) return null
+        if (url.contains("details.php?id=")) {
+            val torrentId = url.substringAfter("details.php?id=").substringBefore("&")
+            return "https://sktorrent.eu/torrent/download.php?id=$torrentId"
+        }
+        return url
     }
 
     private fun parseNumberPattern(text: String, keywords: List<String>): Int? {
